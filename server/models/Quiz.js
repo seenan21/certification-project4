@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const quizSchema = new Schema({
     title : String,
@@ -7,7 +7,7 @@ const quizSchema = new Schema({
     questions : [{ type: Schema.Types.ObjectId, ref: 'Question' }],
     isAttempted : Boolean,
     points : Number,
-    
+ 
 });
 
 const questionSchema = new Schema({

@@ -1,27 +1,93 @@
-const Quiz = require('../models/Quiz');
+const { Quiz, Question } = require('../models/Quiz');
+const User = require('../models/User');
+const mongoose = require('mongoose');
+
+
 
 createQuiz = async (req, res) => {
+    const { username } = req.params;
     const { title, date, questions, isAttempted, points } = req.body;
-    const quiz = new Quiz({ title, date, questions, isAttempted, points });
     try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+                console.log(mongoose.connection.readyState);
+
+        const quiz = new Quiz({
+            title,
+            date,
+            questions,
+            isAttempted,
+            points,
+        });
+        console.log(quiz);
+        // Save the quiz to the database
         await quiz.save();
-        res.status(201).json(quiz);
+
+        // Add the quiz to the user's quizzes array
+        user.quizzes.push(quiz);
+        await user.save();
+
+        // Send the quiz in the response
+        res.json(quiz);
+        
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+    
+
+//This creates a question given input and pushes it to a specific quiz, so quiz must be "created" before a question can be added to it.
+createQuestion = async (req, res) => {
+    const { quizId } = req.params;
+    const { question, options, correctAnswer } = req.body;
+    try {
+        const quiz = await Quiz.findById(quizId);
+        quiz.questions.push({ question, options, correctAnswer });
+        await quiz.save();
+        res.status(201).json(quiz.questions[quiz.questions.length - 1]);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 }
 
-deleteQuiz = async (req, res) => {
-    const { quizId } = req.params;
+openQuiz = async (req, res) => {   
+   const { username, quizId } = req.params;
     try {
-        await Quiz.findByIdAndDelete(quizId);
-        res.status(204).end();
+        const user = await User
+            .findOne({ username })
+            .populate('quizzes');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        res.status(200).json(quiz);
     }
+
     catch (error) {
         res.status(400).json({ message: error.message });
     }
 }
 
+openQuizzes = async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await User
+            .findOne({ username })
+            .populate('quizzes');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user.quizzes);
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
 
 
 
@@ -33,3 +99,5 @@ deleteQuiz = async (req, res) => {
 // /quizzes/:quizId/questions: Retrieve all questions for a specific quiz.
 // /quizzes/:quizId/questions/:questionId: Retrieve a specific question for a quiz.
 // JSON file handling routes:
+
+module.exports = { createQuiz, createQuestion, openQuiz };
