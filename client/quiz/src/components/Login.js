@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { loginSuccess } from './actions';
+import { useDispatch } from 'react-redux';
+
+
 
 function Login() {
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -12,12 +17,20 @@ function Login() {
         setPassword(event.target.value);
     };
 
+    const handleLogin = async () => {
+        try {
+            //login
+            const userId = "bruh"; // asyn call to server to be implemented
+            dispatch(loginSuccess(userId));    
+        }
+        catch (error) {
+      // Handle login error
+        }
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        
-
-        console.log('Username:', username);
-        console.log('Password:', password);
+        handleLogin();
     };
 
     return (
