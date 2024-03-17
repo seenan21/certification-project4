@@ -100,4 +100,4 @@ openQuizzes = async (req, res) => {
 // /quizzes/:quizId/questions/:questionId: Retrieve a specific question for a quiz.
 // JSON file handling routes:
 
-module.exports = { createQuiz, createQuestion, openQuiz };
+module.exports = { createQuiz, createQuestion, openQuiz, openQuizzes };

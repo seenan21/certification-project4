@@ -15,39 +15,27 @@ createUser = async (req, res) => {
     }
 }
 
-// //check if username already exists
-// signUp = async (req, res) => {
-//     const { username, password } = req.body;
-//     try {
-//         const user = await User
-//             .findOne({ username });
-//         if (user) {
-//             res.status(400).json({ message: 'Username already exists' });
-//         }
-//         else {
-//             res.status(200).json({ message: 'Username is available' });
-//         }
-//     }
-//     catch (error) {
-//         res.status(400).json({ message: error.message });
-//     }
-// }
-
-
-getAllQuizzesForUser = async (req, res) => {
-    const { userId } = req.params;
+//check if username already exists
+signUp = async (req, res) => {
+    const { username, password } = req.body;
     try {
-        const user = await User.findById(userId).populate('quizzes');
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        const user = await User
+            .findOne({ username });
+        if (user) {
+            res.status(400).json({ message: 'Username already exists' });
         }
-        res.status(200).json(user.quizzes);
-    } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        else {
+            res.status(200).json({ message: 'Username is available' });
+        }
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
     }
 }
 
+
+
 module.exports = {
     createUser,
-    getAllQuizzesForUser
-}
+    signUp
+};
