@@ -1,16 +1,19 @@
 const db = require('./db')
 const express = require('express');
+const cors = require('cors')
 
 const bodyParser = require('body-parser');
 const signUpRoutes = require('./routes/signUpRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 
-const session = require('express-session');
+// const session = require('express-session');
 const User = require('./models/User');
 const app = express();
+const jwt = require('jsonwebtoken');
+const secretKey = 'not so secret key';
 
 
-
+app.use(cors());
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -19,32 +22,43 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(signUpRoutes);
 app.use(quizRoutes);
 
-// Session middleware
-app.use(session({
-  secret: 'secret-key', // Secret key used to sign the session ID cookie
-  resave: false,
-  saveUninitialized: true
-}));
+// app.use(session({
+//   secret: 'secret-key', 
+//   resave: false,
+//   saveUninitialized: true
+// }));
 
-// To authenticate users
-const authenticateUser = (req, res, next) => {
-  if (req.session.userId) {
+// // To authenticate users
+// const authenticateUser = (req, res, next) => {
+//   if (req.session.userId) {
+//     next();
+//   } else {
+//     //go to login page
+//     res.redirect('/login');
+//   }
+// };
+
+const checkLoggedIn = (req, res, next) => {
+  // Check if user is authenticated (e.g., by checking JWT token)
+  if (req.user) {
+    // User is logged in, proceed to the next middleware or route handler
     next();
   } else {
-    //go to login page
-    res.redirect('/login');
+    // User is not logged in, send unauthorized status
+    res.status(401).json({ message: 'Unauthorized' });
   }
 };
+app.use('/user', checkLoggedIn);
 
-app.use('/user/:username/*', authenticateUser);
+// app.use('/user/:username/*', authenticateUser);
 
-app.get('/user/:username', (req, res) => {
-    res.send('Welcome to your profile page');
-    });
+// app.get('/user/:username', (req, res) => {
+//     res.send('Welcome to your profile page');
+//     });
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the Quiz App');
-    });
+// app.get('/', (req, res) => {
+//     res.send('Welcome to the Quiz App');
+//     });
 
 
 // Login route
@@ -62,9 +76,10 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    req.session.userId = user._id;
-    req.session.username = user.username;
-    res.redirect(`/user/${username}`);
+    // req.session.userId = user._id;
+    // req.session.username = user.username;
+    const token = jwt.sign({ userId: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+    res.status(200).json({ token });
 
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
