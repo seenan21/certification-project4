@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import QuizForm from './QuizForm';
 
 
 
@@ -37,28 +38,44 @@ useEffect(() => {
 };
 
 
-    const handleCreateQuiz = () => {
-        // Logic to handle creating quizzes
-    };
+  
+    const handleViewQuiz = (quiz) => {
+        alert('Viewing a quiz');
+        navigate(`/quiz/${quiz._id}`, { state: { username, userId, quizId: quiz._id } });
+    }
+
+    const handleDeleteQuiz = (quiz) => {
+        alert('Deleting a quiz');
+        // Make API call to delete the quiz with the given quizId
+        // Update the quizzes state accordingly
+    }
+
 
     return (
-        <div>
-            <h1>Profile for {username}</h1>
-            <h2>Quizzes</h2>
-            <ul>
-                //Make list items clickable to view quiz deta
-                {quizzes.map((quiz) => (
-                    <li key={quiz.id}>
-                        Title: {quiz.title}<br></br>
-                        Date Quiz made: {quiz.date} <br></br>
-                        Total points: {quiz.points} <br></br>
-                        Attempted: {quiz.isAttempted ? 'Yes' : 'No'} <br></br>                     
-                        
+        <div style={{ display: 'flex' }}>
+            <div style={{ flex: 1 }}>
+                <h1>Profile for {username}</h1>
+                <h2>Quizzes</h2>
+                <ul>
+                    {quizzes.map((quiz) => (
+                        <li key={quiz._id}>
+                            Title: {quiz.title}<br></br>
+                            Date Quiz made: {quiz.date} <br></br>
+                            Total points: {quiz.points} <br></br>
+                            Attempted: {quiz.isAttempted ? 'Yes' : 'No'} <br></br>  
+                            <button onClick={() => handleViewQuiz(quiz)}>View Quiz</button>
+                            <button onClick={() => handleDeleteQuiz(quiz)}>Delete Quiz</button>
+                            
                         </li>
-                ))}
-            </ul>
-            <button onClick={handleViewQuizzes}>View All Quizzes</button>
-            <button onClick={handleCreateQuiz}>Create Quiz</button>
+                    ))}
+                </ul>
+                <button onClick={handleViewQuizzes}>View All Quizzes</button>
+            </div>
+
+            <div style={{ flex: 1 }}>
+                
+                <QuizForm username={username} setQuizzes={setQuizzes}/>
+            </div>
         </div>
     );
 };

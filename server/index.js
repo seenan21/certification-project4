@@ -39,15 +39,22 @@ app.use(quizRoutes);
 // };
 
 const checkLoggedIn = (req, res, next) => {
-  // Check if user is authenticated (e.g., by checking JWT token)
-  if (req.user) {
-    // User is logged in, proceed to the next middleware or route handler
-    next();
-  } else {
-    // User is not logged in, send unauthorized status
-    res.status(401).json({ message: 'Unauthorized' });
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
   }
+
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    req.user = decoded;
+    next();
+  });
 };
+
 app.use('/user', checkLoggedIn);
 
 // app.use('/user/:username/*', authenticateUser);

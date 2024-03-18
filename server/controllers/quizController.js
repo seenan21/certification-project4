@@ -5,8 +5,9 @@ const mongoose = require('mongoose');
 
 
 createQuiz = async (req, res) => {
-    const { username } = req.params;
-    const { title, date, questions, isAttempted, points } = req.body;
+
+    const { username, title, date, questions, isAttempted, points } = req.body;
+    console.log(username)
     try {
         const user = await User.findOne({ username });
         if (!user) {
@@ -89,6 +90,51 @@ openQuizzes = async (req, res) => {
     }
 }
 
+deleteQuiz = async (req, res) => {
+    const { username, quizId } = req.params;
+    try {
+        const user = await User.findOne
+            ({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        await quiz.remove();
+        res.status(200).json({ message: 'Quiz deleted' });
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+addQuestion = async (req, res) => {
+    const {quizId, question, options, correctAnswer } = req.body;
+    try {
+        const quiz = await Quiz.findById(quizId);
+        quiz.questions.push({ question, options, correctAnswer });
+        await quiz.save();
+        res.status(201).json(quiz.questions[quiz.questions.length - 1]);
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+deleteQuestion = async (req, res) => {
+    const { quizId, questionIndex } = req.params;
+    try {
+        const quiz = await Quiz.findById(quizId);
+        quiz.questions.splice(questionIndex, 1);
+        await quiz.save();
+        res.status(200).json({ message: 'Question deleted' });
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
 
 
 
