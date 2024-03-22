@@ -3,7 +3,6 @@ import { loginSuccess } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -25,37 +24,18 @@ function Login() {
     const handleLogin = async (username, password) => {
         try {
 
-            const token = localStorage.getItem('token');
 
-            const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            };
+           
             //login
-            const response = await axios.post('http://localhost:3001/login', { username, password }, config);
-            
+            const response = await axios.post('http://localhost:3001/login', { username, password });
             if (response.status === 200) {
-                
-
-                const token = response.data.token;
-                localStorage.setItem('token', token);  
-                const decodedToken = jwtDecode(token);
-                const { userId, username } = decodedToken;
-
-                // Dispatch action to update Redux store with userId
-                dispatch(loginSuccess(userId));
-                // Redirect to another view (e.g., dashboard)
-                navigate(`/user/${username}`);
                 alert('Login successful');
-            } else {
-                // Handle unsuccessful login
-                console.error('Login failed:', response.data.message);
-                alert('Login failed');
-            }
+                navigate(`/user/${username}`);
+            } 
         }
         catch (error) {
-      // Handle login error
+        alert('Login failed: ' + error.message);
+                            
         }
     }
 

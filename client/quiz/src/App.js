@@ -19,14 +19,14 @@ function App() {
         <div>
         Click here to register:
         Click here to log in:
-        <button><Link to ="/login">Login</Link> </button>
-        <br></br>
-        Click here to log out:
-        <button onClick={() => {
-          localStorage.removeItem('token');
-          window.location.reload();
-        }
-        }>Logout</button>
+          <button><Link to ="/login">Login</Link> </button>
+          <br></br>
+          Click here to log out:
+          <button onClick={() => {
+            localStorage.removeItem('token');
+            window.location.reload();
+          }
+          }>Logout</button>
         </div>
         <AppRoutes />
 

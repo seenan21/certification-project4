@@ -146,4 +146,4 @@ deleteQuestion = async (req, res) => {
 // /quizzes/:quizId/questions/:questionId: Retrieve a specific question for a quiz.
 // JSON file handling routes:
 
-module.exports = { createQuiz, createQuestion, openQuiz, openQuizzes };
+module.exports = { createQuiz, createQuestion, openQuiz, openQuizzes, deleteQuiz, addQuestion, deleteQuestion};

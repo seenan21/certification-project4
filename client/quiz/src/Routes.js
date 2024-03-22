@@ -15,4 +15,6 @@ function AppRoutes() {
   );
 }
 
+// The plan is
+
 export default AppRoutes;

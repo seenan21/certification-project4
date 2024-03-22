@@ -6,11 +6,9 @@ const bodyParser = require('body-parser');
 const signUpRoutes = require('./routes/signUpRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 
-// const session = require('express-session');
+const session = require('express-session');
 const User = require('./models/User');
 const app = express();
-const jwt = require('jsonwebtoken');
-const secretKey = 'not so secret key';
 
 
 app.use(cors());
@@ -22,50 +20,44 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(signUpRoutes);
 app.use(quizRoutes);
 
-// app.use(session({
-//   secret: 'secret-key', 
-//   resave: false,
-//   saveUninitialized: true
-// }));
-
-// // To authenticate users
-// const authenticateUser = (req, res, next) => {
-//   if (req.session.userId) {
-//     next();
-//   } else {
-//     //go to login page
-//     res.redirect('/login');
-//   }
-// };
-
-const checkLoggedIn = (req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000 
   }
+}));
 
-  jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Invalid token' });
+// To authenticate users
+const authenticateUser = (req, res, next) => {
+  console.log(req.session);
+  if (req.session.userId) {
+    if (req.params.username === req.session.username) {
+      next(); 
+    } else {
+      res.status(403).json({ message: 'You are not authorized to access this page' });
     }
-
-    req.user = decoded;
-    next();
-  });
+  } else {
+    res.status(403).json({ message: 'You are not authorized to access this page' });
+  }
 };
 
-app.use('/user', checkLoggedIn);
 
-// app.use('/user/:username/*', authenticateUser);
 
-// app.get('/user/:username', (req, res) => {
-//     res.send('Welcome to your profile page');
-//     });
+app.use('/user', authenticateUser);
 
-// app.get('/', (req, res) => {
-//     res.send('Welcome to the Quiz App');
-//     });
+
+//logout route
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+    redirect('/login');
+  });
+});
+
 
 
 // Login route
@@ -83,10 +75,9 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // req.session.userId = user._id;
-    // req.session.username = user.username;
-    const token = jwt.sign({ userId: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
-    res.status(200).json({ token });
+    req.session.userId = user._id;
+    req.session.username = user.username;
+    res.status(200).json({ message: 'Login successful' });
 
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
