@@ -20,32 +20,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(signUpRoutes);
 app.use(quizRoutes);
 
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    maxAge: 24 * 60 * 60 * 1000 
-  }
+app.use(session({ 
+    secret: 'keyboard cat', 
 }));
 
-// To authenticate users
-const authenticateUser = (req, res, next) => {
+
+
+app.get('/user', (req, res) => {
   console.log(req.session);
-  if (req.session.userId) {
-    if (req.params.username === req.session.username) {
-      next(); 
-    } else {
-      res.status(403).json({ message: 'You are not authorized to access this page' });
+  if (req.session.username) {
+    data = {
+      userId: req.session.userId,
+      userName: req.session.username
     }
+    res.json(data);
   } else {
-    res.status(403).json({ message: 'You are not authorized to access this page' });
+    res.json({ message: 'User is not logged in' });
   }
-};
-
-
-
-app.use('/user', authenticateUser);
+});
 
 
 //logout route
@@ -57,6 +49,8 @@ app.get('/logout', (req, res) => {
     redirect('/login');
   });
 });
+
+
 
 
 
@@ -75,8 +69,12 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    req.session.userId = user._id;
-    req.session.username = user.username;
+    console.log(user._id);
+    console.log("the input" + user.username);
+    req.session.userId =  user._id;
+req.session.username = user.username;
+console.log(req.session);
+    
     res.status(200).json({ message: 'Login successful' });
 
   } catch (error) {
