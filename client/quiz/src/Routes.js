@@ -15,6 +15,6 @@ function AppRoutes() {
   );
 }
 
-// The plan is to make the redux store update whenever a page is loaded through api calls such that the express session is checked to see if user is logged in still.
+// The plan is to make the redux store update whenever a page is loaded through api calls such that the express session is checked to see if user is
 
 export default AppRoutes;

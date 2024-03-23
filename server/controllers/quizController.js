@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 
 
 createQuiz = async (req, res) => {
-
-    const { username, title, date, questions, isAttempted, points } = req.body;
+    const username = req.params.username;
+    const { title, date, questions, isAttempted, points } = req.body;
     console.log(username)
     try {
         const user = await User.findOne({ username });
