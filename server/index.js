@@ -26,7 +26,7 @@ const sessionConfig = {
         httpOnly: true
     }
 }
-
+app.set("trust proxy", 1);
 app.use(session(sessionConfig));
 
 // Body parser middleware
