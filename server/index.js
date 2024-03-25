@@ -11,7 +11,7 @@ const User = require('./models/User');
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your React application domain
+  origin: 'https://certification-project4-4.onrender.com', // Replace with your React application domain
   credentials: true // Allow credentials (cookies)
 };
 app.use(cors(corsOptions));
