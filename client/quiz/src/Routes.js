@@ -9,7 +9,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/user/:username" element={<Profile />} />
-      <Route path="/quiz/:quizId" element={<QuizViewer />} />
+      <Route path="/user/:username/quiz/:quizId" element={<QuizViewer />} />
       {/* Define other routes here */}
     </Routes>
   );

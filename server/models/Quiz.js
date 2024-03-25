@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const quizSchema = new Schema({
-    title : String,
-    date : Date,
-    questions : [{ type: Schema.Types.ObjectId, ref: 'Question' }],
-    isAttempted : Boolean,
-    points : Number,
- 
+    title: String,
+    date: Date,
+    questions: [{
+        text: String,
+        options: [String],
+        correctOptionIndex: Number,
+        points: Number
+    }],
+    isAttempted: Boolean,
+    points: Number,
 });
 
 const questionSchema = new Schema({

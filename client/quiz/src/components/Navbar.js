@@ -28,11 +28,11 @@ import { useNavigate } from 'react-router-dom';
 
         return (
             <div>
-                Click here to register:
-                Click here to log in:
+              
+                Log in Page:
                 <button><Link to="/login">Login</Link></button>
                 <br></br>
-                Click here to log out:
+                Log out if you are logged in:
                 <button onClick={logout}>Logout</button>
             </div>
         );

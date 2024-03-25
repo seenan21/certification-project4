@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 
 
+
 createQuiz = async (req, res) => {
     const username = req.params.username;
     const { title, date, questions, isAttempted, points } = req.body;
@@ -40,18 +41,26 @@ createQuiz = async (req, res) => {
     
 
 //This creates a question given input and pushes it to a specific quiz, so quiz must be "created" before a question can be added to it.
-createQuestion = async (req, res) => {
+const createQuestion = async (req, res) => {
     const { quizId } = req.params;
-    const { question, options, correctAnswer } = req.body;
+    const { newQuestion } = req.body; // Access newQuestion object from req.body
     try {
         const quiz = await Quiz.findById(quizId);
-        quiz.questions.push({ question, options, correctAnswer });
-        await quiz.save();
-        res.status(201).json(quiz.questions[quiz.questions.length - 1]);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+        quiz.questions.push(newQuestion);
+        quiz.points += newQuestion.points;
+
+        await quiz.save(); 
+
+        res.status(201).json(newQuestion); 
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 }
+
+
 
 openQuiz = async (req, res) => {   
    const { username, quizId } = req.params;
@@ -124,17 +133,24 @@ addQuestion = async (req, res) => {
 }
 
 deleteQuestion = async (req, res) => {
-    const { quizId, questionIndex } = req.params;
+    const { quizId } = req.params;
+    const { index, points } = req.body; 
+
     try {
         const quiz = await Quiz.findById(quizId);
-        quiz.questions.splice(questionIndex, 1);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        quiz.questions.splice(index, 1);
+        console.log(quiz.points);
+        quiz.points -= points;
         await quiz.save();
         res.status(200).json({ message: 'Question deleted' });
-    }
-    catch (error) {
+    } catch (error) {
         res.status(400).json({ message: error.message });
     }
 }
+
 
 
 
