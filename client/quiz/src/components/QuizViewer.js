@@ -23,7 +23,7 @@ const QuizViewer = (props) => {
 
     const getQuiz = async () => { 
         try {
-            const response = await axios.get(`http://localhost:3001/user/${username}/quiz/${quizId}`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/${username}/quiz/${quizId}`, {
                 withCredentials: true
             });
 
@@ -48,7 +48,7 @@ const QuizViewer = (props) => {
 
     const addQuestion = async (questionText, options, correctOptionIndex, points) => {
     try {
-        const response = await axios.post(`http://localhost:3001/user/${username}/quiz/${quizId}`, {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/${username}/quiz/${quizId}`, {
             newQuestion: {
                 text: questionText,
                 options: options,
@@ -115,7 +115,7 @@ const QuizViewer = (props) => {
 
     const deleteQuestion = async (index, points) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/user/${username}/quiz/${quizId}`, {
+            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/user/${username}/quiz/${quizId}`, {
                 data: { index, points }, 
                 withCredentials: true
             });

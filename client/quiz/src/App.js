@@ -7,7 +7,7 @@ import { configureStore } from '@reduxjs/toolkit'; // Import configureStore
 import rootReducer from './redux/rootReducer'; // Import rootReducer
 import { useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import { UseDispatch } from 'react-redux';
+
 
 const store = configureStore({
   reducer: rootReducer, 

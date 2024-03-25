@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
         const logout = () => {
-            fetch('http://localhost:3001/logout', {
+            fetch(`${process.env.REACT_APP_API_URL}/logout`, {
                 method: 'GET',
                 credentials: 'include'
             })

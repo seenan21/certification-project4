@@ -19,7 +19,7 @@ useEffect(() => {
     alert("Fetching user data");
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/user', {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/user`, {
                 withCredentials: true // Include credentials (cookies)
             });
 
@@ -49,7 +49,7 @@ useEffect(() => {
         try {// it will use the username quiz url to get the quizzes
 
             alert("Getting Quizzes");
-            const response = await axios.get(`http://localhost:3001/user/${username}/quiz`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/${username}/quiz`, {
                 withCredentials: true // Include credentials (cookies)
             });
 
@@ -69,28 +69,22 @@ useEffect(() => {
         var isAttempted = false;
         var date = new Date();
 
-
         return async (event) => {
             try {
-                const response = await axios.post(`http://localhost:3001/user/${username}/quiz/`, { title, date, questions, isAttempted, points }, {
-                    withCredentials: true // Include credentials (cookies)
-                });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/${username}/quiz/`, { title, date, questions, isAttempted, points }, {
+                withCredentials: true // Include credentials (cookies)
+            });
 
-                if (response.status === 200) {
-                    alert('Quiz created successfully');
-                    handleGetQuizzes();
-                } else {
-                    alert('Failed to create quiz: ' + response.data.error);
-                }
+            if (response.status === 200) {
+                alert('Quiz created successfully');
+                handleGetQuizzes();
+            } else {
+                alert('Failed to create quiz: ' + response.data.error);
+            }
             } catch (error) {
-                alert('Failed to create quiz: ' + error.message);
+            alert('Failed to create quiz: ' + error.message);
             }
         };
-
-
-        
-
-
     }
 
 

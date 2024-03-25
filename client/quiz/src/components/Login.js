@@ -20,7 +20,7 @@ function Login() {
     const handleLogin = async (username, password) => {
         try {
             // Login
-            const response = await axios.post('http://localhost:3001/login', { username, password }, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { username, password }, {
                 withCredentials: true 
             });
 
@@ -43,7 +43,7 @@ function Login() {
     const handleSignup = async (username, password) => {
         try {
             // Signup
-            const response = await axios.post('http://localhost:3001/signup', { username, password }, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, { username, password }, {
                 withCredentials: true // Include credentials (cookies)
             });
 
