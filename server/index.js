@@ -20,10 +20,14 @@ const sessionConfig = {
       secret: 'keyboard cat', 
     resave: false,
     saveUninitialized: true,
+    name: 'MyCoolWebAppCookieName',
     cookie: {
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true
+        httpOnly: false,
+        sameSite: 'none',
+        secure: true
+
     }
 }
 app.set("trust proxy", 1);
